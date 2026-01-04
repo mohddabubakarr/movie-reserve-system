@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - Movie Reservation System{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-secondary">
+            <img src="{{ movie.poster_url if movie.poster_url and movie.poster_url != 'N/A' else url_for('static', filename='images/no-poster.png') }}" 
+                 class="card-img-top" 
+                 alt="{{ movie.title }}"
+                 onerror="this.src='https://via.placeholder.com/300x450/1a1a1a/666666?text=No+Poster'">
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}" class="text-danger">Home</a></li>
+                <li class="breadcrumb-item active">{{ movie.title }}</li>
+            </ol>
+        </nav>
+        
+        <h1 class="display-5 fw-bold mb-3">{{ movie.title }}</h1>
+        
+        <div class="d-flex flex-wrap gap-3 mb-4">
+            {% if movie.rating and movie.rating != 'N/A' %}
+            <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                <i class="fas fa-star me-1"></i>{{ movie.rating }}/10
+            </span>
+            {% endif %}
+            <span class="badge bg-secondary fs-6 px-3 py-2">
+                <i class="fas fa-calendar me-1"></i>{{ movie.release_year }}
+            </span>
+            {% if movie.genre %}
+            <span class="badge bg-danger fs-6 px-3 py-2">
+                <i class="fas fa-film me-1"></i>{{ movie.genre }}
+            </span>
+            {% endif %}
+        </div>
+        
+        <div class="card bg-dark border-secondary mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle me-2 text-danger"></i>Synopsis</h5>
+                <p class="card-text text-muted">{{ movie.description or 'No description available.' }}</p>
+            </div>
+        </div>
+        
+        <div class="card bg-dark border-secondary">
+            <div class="card-header bg-danger">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Available Showtimes</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Select a showtime to book your tickets:</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for showtime in showtimes %}
+                    <a href="{{ url_for('seat_selection', movie_id=movie.id, showtime=showtime.strip()) }}" 
+                       class="btn btn-outline-light showtime-btn px-4 py-2">
+                        <i class="fas fa-play me-2"></i>{{ showtime.strip() }}
+                    </a>
+                    {% else %}
+                    <p class="text-muted">No showtimes available for this movie.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Movies
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

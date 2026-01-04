@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Select Seats - {{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h2 class="fw-bold"><i class="fas fa-chair me-2 text-danger"></i>Select Your Seats</h2>
+    <p class="text-muted">{{ movie.title }} - {{ showtime }}</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card bg-dark border-secondary mb-4">
+            <div class="card-body">
+                <div class="screen-container text-center mb-4">
+                    <div class="screen">SCREEN</div>
+                </div>
+                
+                <div class="seat-legend d-flex justify-content-center gap-4 mb-4">
+                    <div><span class="seat-demo available"></span> Available</div>
+                    <div><span class="seat-demo selected"></span> Selected</div>
+                    <div><span class="seat-demo booked"></span> Booked</div>
+                </div>
+                
+                <div class="seat-map" id="seatMap">
+                    {% set rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] %}
+                    {% set cols = range(1, 11) %}
+                    
+                    {% for row in rows %}
+                    <div class="seat-row">
+                        <span class="row-label">{{ row }}</span>
+                        {% for col in cols %}
+                        {% set seat_id = row ~ col %}
+                        <button type="button" 
+                                class="seat {% if seat_id in booked_seats %}booked{% else %}available{% endif %}"
+                                data-seat="{{ seat_id }}"
+                                {% if seat_id in booked_seats %}disabled{% endif %}>
+                            {{ col }}
+                        </button>
+                        {% endfor %}
+                        <span class="row-label">{{ row }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-dark border-secondary mb-4" id="selectionCard" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-check-circle me-2 text-success"></i>Selected Seats</h5>
+                <div class="d-flex flex-wrap gap-2 mb-3" id="selectedSeatsDisplay"></div>
+                <p class="mb-0">
+                    <strong>Total Seats:</strong> <span id="totalSeats">0</span>
+                </p>
+            </div>
+        </div>
+        
+        <form action="{{ url_for('book_tickets') }}" method="POST" id="bookingForm">
+            <input type="hidden" name="movie_id" value="{{ movie.id }}">
+            <input type="hidden" name="showtime" value="{{ showtime }}">
+            <input type="hidden" name="seats" id="seatsInput" value="">
+            
+            <div class="d-flex gap-3 justify-content-center">
+                <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
+                {% if session.get('user_id') %}
+                <button type="submit" class="btn btn-danger btn-lg" id="bookBtn" disabled>
+                    <i class="fas fa-ticket-alt me-2"></i>Confirm Booking
+                </button>
+                {% else %}
+                <a href="{{ url_for('login', next=request.url) }}" class="btn btn-danger btn-lg" id="loginBtn" style="display: none;">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Book
+                </a>
+                <a href="{{ url_for('signup', next=request.url) }}" class="btn btn-outline-danger btn-lg" id="signupBtn" style="display: none;">
+                    <i class="fas fa-user-plus me-2"></i>Sign Up
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/seats.js') }}"></script>
+{% endblock %}

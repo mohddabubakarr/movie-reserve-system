@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings - Movie Reservation System{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="fw-bold"><i class="fas fa-ticket-alt me-2 text-danger"></i>My Bookings</h2>
+    <p class="text-muted">View and manage your movie reservations</p>
+</div>
+
+{% if bookings %}
+<div class="row g-4">
+    {% for booking in bookings %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card bg-dark border-secondary h-100">
+            <div class="row g-0">
+                <div class="col-4">
+                    <img src="{{ booking.poster_url if booking.poster_url and booking.poster_url != 'N/A' else url_for('static', filename='images/no-poster.png') }}" 
+                         class="img-fluid rounded-start h-100 object-fit-cover" 
+                         alt="{{ booking.title }}"
+                         onerror="this.src='https://via.placeholder.com/150x225/1a1a1a/666666?text=No+Poster'">
+                </div>
+                <div class="col-8">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ booking.title }}</h5>
+                        <p class="card-text mb-1">
+                            <small class="text-warning"><i class="fas fa-hashtag me-1"></i>{{ booking.booking_id }}</small>
+                        </p>
+                        <p class="card-text mb-1">
+                            <small class="text-muted"><i class="fas fa-clock me-1"></i>{{ booking.showtime }}</small>
+                        </p>
+                        <p class="card-text mb-2">
+                            <small class="text-muted"><i class="fas fa-chair me-1"></i>Seats: {{ booking.seats }}</small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted"><i class="fas fa-calendar me-1"></i>{{ booking.booking_date }}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-ticket-alt fa-5x text-muted mb-4"></i>
+    <h3 class="text-muted">No bookings yet</h3>
+    <p class="text-muted">You haven't made any movie reservations.</p>
+    <a href="{{ url_for('index') }}" class="btn btn-danger btn-lg mt-3">
+        <i class="fas fa-film me-2"></i>Browse Movies
+    </a>
+</div>
+{% endif %}
+{% endblock %}

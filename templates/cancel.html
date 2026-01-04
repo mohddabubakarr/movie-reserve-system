@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Cancel Booking - Movie Reservation System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        {% if cancelled %}
+        <div class="text-center mb-4">
+            <div class="success-animation">
+                <i class="fas fa-check-circle fa-5x text-success mb-3"></i>
+            </div>
+            <h2 class="fw-bold text-success">Booking Cancelled</h2>
+            <p class="text-muted">Your booking <strong class="text-warning">{{ booking_id }}</strong> has been successfully cancelled.</p>
+            <div class="alert alert-info">
+                <i class="fas fa-envelope me-2"></i>
+                A cancellation confirmation email has been sent to your registered email address.
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-danger btn-lg mt-3">
+                <i class="fas fa-home me-2"></i>Back to Home
+            </a>
+        </div>
+        {% else %}
+        <div class="card bg-dark border-secondary">
+            <div class="card-header text-center bg-danger">
+                <h4 class="mb-0"><i class="fas fa-times-circle me-2"></i>Cancel Booking</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted text-center mb-4">
+                    Enter your booking ID and registered email to cancel your reservation.
+                </p>
+                
+                <form method="POST" action="{{ url_for('cancel_booking') }}">
+                    <div class="mb-3">
+                        <label for="booking_id" class="form-label">Booking ID</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary">
+                                <i class="fas fa-hashtag text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control bg-dark border-secondary text-white" 
+                                   id="booking_id" name="booking_id" required 
+                                   placeholder="e.g., BK12345678"
+                                   style="text-transform: uppercase;">
+                        </div>
+                        <small class="text-muted">You can find this in your confirmation email.</small>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary">
+                                <i class="fas fa-envelope text-muted"></i>
+                            </span>
+                            <input type="email" class="form-control bg-dark border-secondary text-white" 
+                                   id="email" name="email" required 
+                                   placeholder="Enter your registered email">
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This action cannot be undone. Your seats will be released for others to book.
+                    </div>
+                    
+                    <button type="submit" class="btn btn-danger w-100 py-2">
+                        <i class="fas fa-times-circle me-2"></i>Cancel Booking
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="text-muted">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
